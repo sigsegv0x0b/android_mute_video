@@ -54,9 +54,8 @@ All dependencies must be compatible with compileSdk 34:
 ## App Architecture
 
 ### Flow
-1. User taps "Mute Video" → SAF file picker (`ACTION_OPEN_DOCUMENT`, `video/*`)
-2. Selected URI is passed to `VideoMuter.muteVideo()`
-3. File is copied to cache, processed, result saved to Downloads via `MediaStore`
+1. **Mute Video**: User taps "Mute Video" → SAF file picker → `VideoMuter.muteVideo()` → strips audio tracks → saves to Downloads
+2. **Trim Video**: User taps "Trim Video" → SAF file picker → file copied to cache → `TrimActivity` opens with preview/scrubber → user marks In/Out points → `VideoTrimmer.trimVideo()` crops between timestamps → saves to Downloads
 
 ### How Muting Works
 Uses Android's `MediaExtractor` + `MediaMuxer` — no FFmpeg needed:
@@ -65,6 +64,18 @@ Uses Android's `MediaExtractor` + `MediaMuxer` — no FFmpeg needed:
 3. `MediaMuxer` writes the video packets as-is to a new MP4 (stream copy, no decode/re-encode)
 4. Output is saved to `MediaStore.Downloads` with filename `Muted_Video_<timestamp>.mp4`
 
+### How Trimming Works
+Same stream-copy approach (no decode/re-encode):
+1. `MediaExtractor` discovers all video + audio tracks
+2. For each track: `seekTo(startTimeUs)`, reads samples until `endTimeUs`, writes with adjusted PTS (`pts - startTimeUs`)
+3. Output saved to `MediaStore.Downloads` as `Trimmed_Video_<timestamp>.mp4`
+
 ### Key classes
-- **MainActivity.kt** — Single activity, button + file picker + processing trigger
-- **VideoMuter.kt** — Core: `copyUriToFile()`, `MediaExtractor`/`MediaMuxer` loop, `saveToDownloads()`
+- **MainActivity.kt** — Single activity, Trim Video + Mute Video buttons, SAF file pickers
+- **TrimActivity.kt** — Trim UI: `VideoView` preview, play/pause, `SeekBar` scrubber, Mark In/Out buttons with positioned markers, Trim button
+- **VideoMuter.kt** — Core mute logic: `copyUriToFile()`, `MediaExtractor`/`MediaMuxer` loop, `saveToDownloads()`
+- **VideoTrimmer.kt** — Core trim logic: same as muter but copies all tracks between in/out timestamps
+
+### Key layouts
+- `activity_main.xml` — Two buttons (Trim Video, Mute Video) + log scroll
+- `activity_trim.xml` — VideoView in FrameLayout, play button, time label, SeekBar with in/out marker overlays, Mark In/Out buttons, Trim button, log scroll
