@@ -1,15 +1,22 @@
-# Mute Video
+# Mute Video / Trim Video
 
-A native Android app that removes audio from video files without re-encoding. Uses Android's `MediaExtractor` + `MediaMuxer` APIs for fast, lossless stream copy.
+A native Android app that mutes (strips audio) or trims video files without re-encoding. Uses Android's `MediaExtractor` + `MediaMuxer` APIs for fast, lossless stream copy.
 
-## How it works
+## Features
 
+### Mute Video
 1. Tap **Mute Video** — opens a system file picker for `video/*` files
-2. Select a video — the app copies it to cache and processes it
+2. Select a video — copied to cache and processed
 3. `MediaExtractor` reads all tracks, but only the **video track** is selected
 4. `MediaMuxer` writes the video packets as-is to a new MP4 (no decode/re-encode)
-5. Audio/subtitle tracks are dropped → effectively muted
-6. Output is saved to `Downloads/Muted_Video_<timestamp>.mp4`
+5. Output saved to `Downloads/Muted_Video_<timestamp>.mp4`
+
+### Trim Video
+1. Tap **Trim Video** — opens a system file picker for `video/*` files
+2. Select a video — copied to cache, opens trim view with preview
+3. Use the scrubber to navigate, tap **Mark In** / **Mark Out** to set trim points
+4. Tap **Trim Video** — extracts all tracks between the in/out timestamps
+5. Output saved to `Downloads/Trimmed_Video_<timestamp>.mp4`
 
 No FFmpeg, no external binaries, no extra permissions.
 
@@ -35,8 +42,10 @@ Use `compileSdk = 34` — the aarch64 aapt2 from build-tools 34.0.4 cannot load 
 
 | File | Purpose |
 |------|---------|
-| `MainActivity.kt` | Single activity with mute button + SAF file picker |
-| `VideoMuter.kt` | Core: `copyUriToFile()`, `MediaExtractor`/`MediaMuxer` loop, `saveToDownloads()` |
+| `MainActivity.kt` | Main activity with Trim/Mute buttons + SAF file pickers |
+| `TrimActivity.kt` | Trim UI: VideoView preview, play/pause, SeekBar scrubber, Mark In/Out, Trim button |
+| `VideoMuter.kt` | Core mute: `copyUriToFile()`, `MediaExtractor`/`MediaMuxer` loop, `saveToDownloads()` |
+| `VideoTrimmer.kt` | Core trim: same approach but copies all tracks between in/out timestamps |
 
 ## License
 
