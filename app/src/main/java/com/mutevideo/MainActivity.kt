@@ -1,5 +1,6 @@
 package com.mutevideo
 
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -23,10 +24,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private val pickTrimVideo = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
+        if (uri != null) {
+            lifecycleScope.launch {
+                val cacheFile = withContext(Dispatchers.IO) {
+                    val f = java.io.File(cacheDir, "trim_preview_${System.nanoTime()}")
+                    contentResolver.openInputStream(uri)?.use { input ->
+                        f.outputStream().use { output -> input.copyTo(output) }
+                    }
+                    f
+                }
+                val intent = Intent(this@MainActivity, TrimActivity::class.java).apply { data = Uri.fromFile(cacheFile) }
+                startActivity(intent)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        binding.trimButton.setOnClickListener {
+            pickTrimVideo.launch(arrayOf("video/*"))
+        }
 
         binding.muteButton.setOnClickListener {
             pickVideo.launch(arrayOf("video/*"))
