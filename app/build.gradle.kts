@@ -10,21 +10,32 @@ kotlin {
 }
 
 android {
-    namespace = "com.mutevideo"
+    namespace = "com.muteandtrimvideo"
     compileSdk = 34
     buildToolsVersion = "34.0.0"
 
     defaultConfig {
-        applicationId = "com.mutevideo"
+        applicationId = "com.muteandtrimvideo"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("release.keystore")
+            storePassword = "mutevideo"
+            keyAlias = "mute"
+            keyPassword = "mutevideo"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            isDebuggable = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
         }
     }

@@ -1,4 +1,4 @@
-package com.mutevideo
+package com.muteandtrimvideo
 
 import android.content.Context
 import android.media.MediaCodec

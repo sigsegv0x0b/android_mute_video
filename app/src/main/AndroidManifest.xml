@@ -3,9 +3,9 @@
 
     <application
         android:allowBackup="true"
-        android:label="Mute Video"
+        android:label="Mute and Trim"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MuteVideo">
+        android:theme="@style/Theme.MuteAndTrim">
 
         <activity
             android:name=".MainActivity"

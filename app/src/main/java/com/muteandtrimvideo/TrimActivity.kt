@@ -1,4 +1,4 @@
-package com.mutevideo
+package com.muteandtrimvideo
 
 import android.app.AlertDialog
 import android.media.MediaExtractor
@@ -14,7 +14,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.mutevideo.databinding.ActivityTrimBinding
+import com.muteandtrimvideo.databinding.ActivityTrimBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
