@@ -9,9 +9,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.mutevideo.databinding.ActivityMainBinding
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -26,17 +24,9 @@ class MainActivity : AppCompatActivity() {
 
     private val pickTrimVideo = registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
         if (uri != null) {
-            lifecycleScope.launch {
-                val cacheFile = withContext(Dispatchers.IO) {
-                    val f = java.io.File(cacheDir, "trim_preview_${System.nanoTime()}")
-                    contentResolver.openInputStream(uri)?.use { input ->
-                        f.outputStream().use { output -> input.copyTo(output) }
-                    }
-                    f
-                }
-                val intent = Intent(this@MainActivity, TrimActivity::class.java).apply { data = Uri.fromFile(cacheFile) }
-                startActivity(intent)
-            }
+            setButtonsEnabled(false)
+            val intent = Intent(this@MainActivity, TrimActivity::class.java).apply { data = uri }
+            startActivity(intent)
         }
     }
 
@@ -52,6 +42,11 @@ class MainActivity : AppCompatActivity() {
         binding.muteButton.setOnClickListener {
             pickVideo.launch(arrayOf("video/*"))
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        setButtonsEnabled(true)
     }
 
     private fun muteVideo(inputUri: Uri) {
@@ -75,6 +70,11 @@ class MainActivity : AppCompatActivity() {
 
             binding.muteButton.isEnabled = true
         }
+    }
+
+    private fun setButtonsEnabled(enabled: Boolean) {
+        binding.trimButton.isEnabled = enabled
+        binding.muteButton.isEnabled = enabled
     }
 
     private fun appendLog(msg: String) {

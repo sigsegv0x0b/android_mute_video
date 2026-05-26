@@ -23,17 +23,17 @@ class VideoTrimmer {
         try {
             onLog("Checking cache dir...")
             val cacheDir = context.cacheDir
-            val inputFile = File(cacheDir, "input_${System.nanoTime()}")
             val outputFile = File(cacheDir, "output_${System.nanoTime()}.mp4")
 
             onLog("Opening input file...")
-            copyUriToFile(context, inputUri, inputFile)
-            val fileSize = inputFile.length()
+            val fd = context.contentResolver.openAssetFileDescriptor(inputUri, "r")
+            val fileSize = fd?.length ?: 0L
+            fd?.close()
             onLog("File size: ${formatFileSize(fileSize)}")
 
             onLog("Scanning tracks...")
             val extractor = MediaExtractor()
-            extractor.setDataSource(inputFile.absolutePath)
+            extractor.setDataSource(context, inputUri, null)
 
             data class TrackInfo(val index: Int, val format: MediaFormat, val mime: String)
             val tracks = mutableListOf<TrackInfo>()
@@ -51,7 +51,6 @@ class VideoTrimmer {
             extractor.release()
 
             if (tracks.isEmpty()) {
-                inputFile.delete()
                 return@withContext Result.failure(Exception("No video or audio tracks found"))
             }
 
@@ -109,7 +108,7 @@ class VideoTrimmer {
             var totalFrames = 0
             for (track in tracks) {
                 val ex = MediaExtractor()
-                ex.setDataSource(inputFile.absolutePath)
+                ex.setDataSource(context, inputUri, null)
                 ex.selectTrack(track.index)
                 ex.seekTo(startTimeUs, MediaExtractor.SEEK_TO_PREVIOUS_SYNC)
 
@@ -149,7 +148,6 @@ class VideoTrimmer {
             onLog("Finalizing muxer...")
             muxer.stop()
             muxer.release()
-            inputFile.delete()
 
             val outputName = "Trimmed_Video_${System.currentTimeMillis()}.mp4"
             onLog("Saving to Downloads/$outputName ...")
@@ -169,16 +167,6 @@ class VideoTrimmer {
         val csd1 = source.getByteBuffer("csd-1")
         if (csd0 != null) dest.setByteBuffer("csd-0", csd0)
         if (csd1 != null) dest.setByteBuffer("csd-1", csd1)
-    }
-
-    private fun copyUriToFile(context: Context, uri: Uri, dest: File) {
-        val inputStream = context.contentResolver.openInputStream(uri)
-            ?: throw Exception("Cannot open file")
-        inputStream.use { input ->
-            dest.outputStream().use { output ->
-                input.copyTo(output)
-            }
-        }
     }
 
     private fun saveToDownloads(context: Context, file: File, displayName: String): String {

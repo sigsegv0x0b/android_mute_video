@@ -1,7 +1,9 @@
 package com.mutevideo
 
+import android.app.AlertDialog
 import android.media.MediaExtractor
 import android.media.MediaFormat
+import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -16,7 +18,6 @@ import com.mutevideo.databinding.ActivityTrimBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.File
 
 class TrimActivity : AppCompatActivity() {
     private lateinit var binding: ActivityTrimBinding
@@ -77,7 +78,9 @@ class TrimActivity : AppCompatActivity() {
     }
 
     private fun setupVideoView() {
+        showLoading()
         binding.videoView.setOnPreparedListener { mp ->
+            hideLoading()
             durationUs = mp.duration.toLong() * 1000L
             mp.isLooping = false
             updateTimeLabel(0L, durationUs)
@@ -94,27 +97,53 @@ class TrimActivity : AppCompatActivity() {
             handler.removeCallbacks(updateRunnable)
         }
         binding.videoView.setOnErrorListener { _, what, extra ->
+            hideLoading()
             Log.e("TrimActivity", "Video error: what=$what extra=$extra")
-            appendLog("Video playback error: $what / $extra")
+            showVideoErrorDialog(what, extra)
             true
         }
         binding.videoView.post { binding.videoView.setVideoURI(videoUri) }
-        binding.trimLogText.text = "Loading video..."
         binding.scrubber.isEnabled = false
+    }
+
+    private fun showLoading() {
+        binding.loadingOverlay.visibility = View.VISIBLE
+    }
+
+    private fun hideLoading() {
+        binding.loadingOverlay.visibility = View.GONE
+    }
+
+    private fun showVideoErrorDialog(what: Int, extra: Int) {
+        val msg = when (what) {
+            MediaPlayer.MEDIA_ERROR_SERVER_DIED -> "Video server died"
+            MediaPlayer.MEDIA_ERROR_UNKNOWN -> "Unknown video error"
+            else -> "Error code: $what / $extra"
+        }
+        AlertDialog.Builder(this)
+            .setTitle("Failed to Load Video")
+            .setMessage("$msg\n\nThe video could not be loaded. It may be corrupted or in an unsupported format.")
+            .setPositiveButton("Go Back") { _, _ -> finish() }
+            .setNegativeButton("Retry") { _, _ ->
+                showLoading()
+                binding.videoView.post { binding.videoView.setVideoURI(videoUri) }
+            }
+            .setCancelable(false)
+            .show()
     }
 
     private fun logVideoInfo(videoWidth: Int, videoHeight: Int) {
         lifecycleScope.launch(Dispatchers.IO) {
             val uri = videoUri ?: return@launch
-            if (uri.scheme != "file") return@launch
-            val file = File(uri.path!!)
-            val fileSize = file.length()
+            val fd = contentResolver.openAssetFileDescriptor(uri, "r")
+            val fileSize = fd?.length ?: 0L
+            fd?.close()
             val info = mutableListOf<String>()
             info.add("File: ${formatFileSize(fileSize)}")
 
             try {
                 val extractor = MediaExtractor()
-                extractor.setDataSource(file.absolutePath)
+                extractor.setDataSource(this@TrimActivity, uri, null)
                 info.add("Tracks: ${extractor.trackCount}")
                 for (i in 0 until extractor.trackCount) {
                     val format = extractor.getTrackFormat(i)

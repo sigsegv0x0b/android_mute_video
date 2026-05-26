@@ -18,17 +18,17 @@ class VideoMuter {
         try {
             onLog("Checking cache dir...")
             val cacheDir = context.cacheDir
-            val inputFile = File(cacheDir, "input_${System.nanoTime()}")
             val outputFile = File(cacheDir, "output_${System.nanoTime()}.mp4")
 
             onLog("Opening input file...")
-            copyUriToFile(context, inputUri, inputFile)
-            val fileSize = inputFile.length()
+            val fd = context.contentResolver.openAssetFileDescriptor(inputUri, "r")
+            val fileSize = fd?.length ?: 0L
+            fd?.close()
             onLog("File size: ${formatFileSize(fileSize)}")
 
             onLog("Initializing MediaExtractor...")
             val extractor = MediaExtractor()
-            extractor.setDataSource(inputFile.absolutePath)
+            extractor.setDataSource(context, inputUri, null)
 
             val trackCount = extractor.trackCount
             onLog("Found $trackCount tracks")
@@ -49,7 +49,6 @@ class VideoMuter {
 
             if (videoTrackIndex == -1 || rawFormat == null) {
                 extractor.release()
-                inputFile.delete()
                 return@withContext Result.failure(Exception("No video track found"))
             }
 
@@ -98,7 +97,6 @@ class VideoMuter {
                 onLog("MediaMuxer created")
             } catch (e: Exception) {
                 extractor.release()
-                inputFile.delete()
                 onLog("FAILED: MediaMuxer creation - ${e::class.simpleName}: ${e.message}")
                 return@withContext Result.failure(Exception("Muxer creation failed: ${e.message}"))
             }
@@ -116,7 +114,6 @@ class VideoMuter {
             } catch (e: Exception) {
                 muxer.release()
                 extractor.release()
-                inputFile.delete()
                 outputFile.delete()
                 onLog("FAILED: addTrack - ${e::class.simpleName}: ${e.message}")
                 return@withContext Result.failure(Exception("addTrack failed: ${e.message}"))
@@ -168,7 +165,6 @@ class VideoMuter {
             muxer.stop()
             muxer.release()
             extractor.release()
-            inputFile.delete()
 
             val outputName = "Muted_Video_${System.currentTimeMillis()}.mp4"
             onLog("Saving to Downloads/$outputName ...")
@@ -180,16 +176,6 @@ class VideoMuter {
         } catch (e: Exception) {
             onLog("ERROR: ${e::class.simpleName}: ${e.message}")
             return@withContext Result.failure(e)
-        }
-    }
-
-    private fun copyUriToFile(context: Context, uri: Uri, dest: File) {
-        val inputStream = context.contentResolver.openInputStream(uri)
-            ?: throw Exception("Cannot open file")
-        inputStream.use { input ->
-            dest.outputStream().use { output ->
-                input.copyTo(output)
-            }
         }
     }
 
