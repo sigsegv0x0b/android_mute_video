@@ -1,0 +1,80 @@
+<svg viewBox="0 0 1024 500" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1a0a3e"/>
+      <stop offset="100%" stop-color="#311B92"/>
+    </linearGradient>
+    <linearGradient id="badgeBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#5E35B1"/>
+      <stop offset="100%" stop-color="#4527A0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1024" height="500" fill="url(#bg)"/>
+
+  <!-- Decorative circles -->
+  <circle cx="880" cy="100" r="70" fill="#4527A0" opacity="0.25"/>
+  <circle cx="120" cy="420" r="90" fill="#5E35B1" opacity="0.15"/>
+  <circle cx="920" cy="400" r="50" fill="#4527A0" opacity="0.2"/>
+
+  <!-- Left side: Filmstrip icon -->
+  <g transform="translate(220, 250)">
+
+    <!-- Filmstrip outer -->
+    <rect x="-100" y="-120" width="200" height="160" rx="12" fill="none" stroke="white" stroke-width="5"/>
+
+    <!-- Sprocket holes -->
+    <g fill="#1a0a3e" stroke="white" stroke-width="3">
+      <circle cx="-60" cy="-120" r="8"/>
+      <circle cx="0" cy="-120" r="8"/>
+      <circle cx="60" cy="-120" r="8"/>
+      <circle cx="-60" cy="40" r="8"/>
+      <circle cx="0" cy="40" r="8"/>
+      <circle cx="60" cy="40" r="8"/>
+    </g>
+
+    <!-- Divider -->
+    <line x1="0" y1="-100" x2="0" y2="20" stroke="white" stroke-width="1.5" opacity="0.5"/>
+
+    <!-- Left half: Mute icon -->
+    <rect x="-70" y="-40" width="16" height="44" rx="2" fill="white"/>
+    <polygon points="-54,-40 -36,-54 -36,26 -54,12" fill="white"/>
+    <path d="M-30,-34 Q-22,-14 -30,6" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M-22,-44 Q-10,-14 -22,16" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="-26" y1="-54" x2="-8" y2="26" stroke="#FF5252" stroke-width="5" stroke-linecap="round"/>
+    <line x1="-8" y1="-54" x2="-26" y2="26" stroke="#FF5252" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Right half: Scissors -->
+    <circle cx="30" cy="-60" r="8" fill="none" stroke="white" stroke-width="3.5"/>
+    <circle cx="55" cy="-52" r="8" fill="none" stroke="white" stroke-width="3.5"/>
+    <line x1="38" y1="-52" x2="18" y2="20" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+    <line x1="63" y1="-44" x2="30" y2="20" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right side: Text -->
+  <text x="430" y="220" font-family="sans-serif" font-weight="bold" font-size="52" fill="white" letter-spacing="2">
+    Mute and Trim
+  </text>
+
+  <text x="430" y="270" font-family="sans-serif" font-weight="normal" font-size="20" fill="#B39DDB" letter-spacing="1">
+    Trim &amp; mute videos locally
+  </text>
+
+  <text x="430" y="300" font-family="sans-serif" font-weight="normal" font-size="20" fill="#B39DDB" letter-spacing="1">
+    No ads · No data collection
+  </text>
+
+  <!-- Badges -->
+  <g transform="translate(430, 360)">
+    <rect x="0" y="-20" width="130" height="36" rx="18" fill="url(#badgeBg)"/>
+    <text x="65" y="5" font-family="sans-serif" font-weight="600" font-size="15" fill="white" text-anchor="middle">
+      Fully Offline
+    </text>
+
+    <rect x="145" y="-20" width="130" height="36" rx="18" fill="url(#badgeBg)"/>
+    <text x="210" y="5" font-family="sans-serif" font-weight="600" font-size="15" fill="white" text-anchor="middle">
+      No Tracking
+    </text>
+  </g>
+
+</svg>
