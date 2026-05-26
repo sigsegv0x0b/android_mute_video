@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Filmstrip frame -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="3"
+        android:pathData="M19,22 L89,22 Q94,22 94,27 L94,79 Q94,84 89,84 L19,84 Q14,84 14,79 L14,27 Q14,22 19,22 Z" />
+
+    <!-- Sprocket holes top -->
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M30,22 A4,4 0,1,0 30,14 L30,22 Z" />
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M54,22 A4,4 0,1,0 54,14 L54,22 Z" />
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M78,22 A4,4 0,1,0 78,14 L78,22 Z" />
+
+    <!-- Sprocket holes bottom -->
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M30,86 A4,4 0,1,1 30,94 L30,86 Z" />
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M54,86 A4,4 0,1,1 54,94 L54,86 Z" />
+    <path android:fillColor="#311B92" android:strokeColor="#FFFFFF" android:strokeWidth="2"
+        android:pathData="M78,86 A4,4 0,1,1 78,94 L78,86 Z" />
+
+    <!-- Divider line -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="1"
+        android:pathData="M54,33 L54,75" />
+
+    <!-- Speaker body -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M26,44 L34,44 Q35,44 35,45 L35,63 Q35,64 34,64 L26,64 Q25,64 25,63 L25,45 Q25,44 26,44 Z" />
+
+    <!-- Speaker cone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,44 L46,37 L46,71 L34,64 Z" />
+
+    <!-- Sound waves -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M44,47 Q48,54 44,61" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:pathData="M48,44 Q54,54 48,64" />
+
+    <!-- Mute X -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF5252"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M46,44 L56,64" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FF5252"
+        android:strokeWidth="3"
+        android:strokeLineCap="round"
+        android:pathData="M56,44 L46,64" />
+
+    <!-- Scissors handles -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M64,40 A4,4 0,1,0 64,32 A4,4 0,1,0 64,40 Z" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:pathData="M76,38 A4,4 0,1,0 76,30 A4,4 0,1,0 76,38 Z" />
+
+    <!-- Scissors blades -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M68,44 L58,72" />
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="2.5"
+        android:strokeLineCap="round"
+        android:pathData="M78,42 L60,72" />
+</vector>
